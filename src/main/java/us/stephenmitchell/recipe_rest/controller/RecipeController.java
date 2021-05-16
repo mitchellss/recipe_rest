@@ -6,6 +6,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import us.stephenmitchell.recipe_rest.assembler.RecipeAssembler;
+import us.stephenmitchell.recipe_rest.exception.RecipeNotFoundException;
 import us.stephenmitchell.recipe_rest.repository.RecipeRepository;
 import us.stephenmitchell.recipe_rest.model.Recipe;
 

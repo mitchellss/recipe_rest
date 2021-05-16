@@ -1,18 +1,19 @@
-package us.stephenmitchell.recipe_rest.controller;
+package us.stephenmitchell.recipe_rest.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import us.stephenmitchell.recipe_rest.exception.RecipeNotFoundException;
 
 @ControllerAdvice
-public class StepNotFoundAdvice {
+public class RecipeNotFoundAdvice {
 
     @ResponseBody
-    @ExceptionHandler(StepNotFoundException.class)
+    @ExceptionHandler(RecipeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String stepNotFoundHandler(StepNotFoundException ex) {
+    String recipeNotFoundHandler(RecipeNotFoundException ex) {
         return ex.getMessage();
     }
 }

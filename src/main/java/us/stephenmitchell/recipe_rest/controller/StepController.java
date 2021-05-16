@@ -5,6 +5,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import us.stephenmitchell.recipe_rest.exception.StepNotFoundException;
 import us.stephenmitchell.recipe_rest.model.Step;
 import us.stephenmitchell.recipe_rest.repository.StepRepository;
 
