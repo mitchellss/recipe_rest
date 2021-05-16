@@ -3,12 +3,11 @@ package us.stephenmitchell.recipe_rest.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import us.stephenmitchell.recipe_rest.repository.RecipeRepository;
-import us.stephenmitchell.recipe_rest.model.RecipeModel;
+import us.stephenmitchell.recipe_rest.model.Recipe;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,14 +27,9 @@ public class RecipeController {
         this.recipeAssembler = recipeAssembler;
     }
 
-    // @GetMapping("/get_recipe")
-    // public Iterable<RecipeModel> all() {
-    //     return recipeRepository.findAll();
-    // }
-
     @GetMapping("/get_recipe")
-    public CollectionModel<EntityModel<RecipeModel>> all() {
-        List<EntityModel<RecipeModel>> recipes = StreamSupport
+    public CollectionModel<EntityModel<Recipe>> all() {
+        List<EntityModel<Recipe>> recipes = StreamSupport
                 .stream(recipeRepository.findAll().spliterator(), false)
                 .map(recipeAssembler::toModel)
                 .collect(Collectors.toList());
@@ -44,14 +38,14 @@ public class RecipeController {
     }
 
     @PostMapping("/post_recipe")
-    public String postRecipe(@RequestBody RecipeModel recipe) {
+    public String postRecipe(@RequestBody Recipe recipe) {
         recipeRepository.save(recipe);
         return recipe.toString();
     }
 
     @GetMapping("/get_recipe/{id}")
-    public EntityModel<RecipeModel> one(@PathVariable Long id) {
-        RecipeModel recipe = recipeRepository.findById(id)
+    public EntityModel<Recipe> one(@PathVariable Long id) {
+        Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RecipeNotFoundException(id));
 
         return recipeAssembler.toModel(recipe);

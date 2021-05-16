@@ -1,10 +1,10 @@
 package us.stephenmitchell.recipe_rest.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import us.stephenmitchell.recipe_rest.model.StepModel;
+import us.stephenmitchell.recipe_rest.model.Step;
 
 import java.util.List;
 
-public interface StepRepository extends CrudRepository<StepModel, Long> {
-    List<StepModel> findById(long id);
+public interface StepRepository extends CrudRepository<Step, Long> {
+    List<Step> findById(long id);
 }

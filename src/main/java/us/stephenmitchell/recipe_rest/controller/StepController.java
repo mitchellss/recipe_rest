@@ -5,7 +5,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import us.stephenmitchell.recipe_rest.model.StepModel;
+import us.stephenmitchell.recipe_rest.model.Step;
 import us.stephenmitchell.recipe_rest.repository.StepRepository;
 
 @RestController
@@ -16,19 +16,19 @@ public class StepController {
     StepRepository stepRepository;
 
     @GetMapping("/get_step")
-    public Iterable<StepModel> all() {
+    public Iterable<Step> all() {
         return stepRepository.findAll();
     }
 
     @PostMapping("/post_step")
-    public String postStep(@RequestBody StepModel step) {
+    public String postStep(@RequestBody Step step) {
         stepRepository.save(step);
         return step.toString();
     }
 
     @GetMapping("/get_step/{id}")
-    public EntityModel<StepModel> one(@PathVariable Long id) {
-        StepModel step = stepRepository.findById(id)
+    public EntityModel<Step> one(@PathVariable Long id) {
+        Step step = stepRepository.findById(id)
                 .orElseThrow(() -> new StepNotFoundException(id));
 
         return EntityModel.of(step,

@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "step")
-public class StepModel {
+public class Step {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,11 +19,11 @@ public class StepModel {
 
     @ManyToOne
     @JoinColumn(name = "RECIPE_ID")
-    private RecipeModel recipe;
+    private Recipe recipe;
 
-    public StepModel() { super(); }
+    public Step() { super(); }
 
-    public StepModel(Long id, String text) {
+    public Step(Long id, String text) {
         super();
         this.id = id;
         this.text = text;
@@ -49,11 +49,11 @@ public class StepModel {
         this.text = text;
     }
 
-    public RecipeModel getRecipe() {
+    public Recipe getRecipe() {
         return recipe;
     }
 
-    public void setRecipe(RecipeModel recipe) {
+    public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
     }
 
