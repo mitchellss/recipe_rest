@@ -52,4 +52,13 @@ public class RecipeModel {
     public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
+
+    @Override
+    public String toString() {
+        return "RecipeModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", datetime='" + datetime + '\'' +
+                '}';
+    }
 }

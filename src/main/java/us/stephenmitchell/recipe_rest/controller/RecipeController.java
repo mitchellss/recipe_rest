@@ -24,4 +24,10 @@ public class RecipeController {
         return recipe.toString();
     }
 
+    @GetMapping("/get_recipe/{id}")
+    public RecipeModel one(@PathVariable Long id) {
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new RecipeNotFoundException(id));
+    }
+
 }
