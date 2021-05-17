@@ -11,7 +11,7 @@ public class Ingredient {
     @Column(name = "id")
     private Long id;
 
-    @Column(name="name")
+    @Column(name="ingredient_name")
     private String name;
 
     @Column(name="measurement")

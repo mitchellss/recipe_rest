@@ -25,7 +25,7 @@ public class Material {
     private String measurement;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "ingredient")
+    @JoinColumn(name = "ingredient_id")
     @Getter
     @Setter
     private Ingredient ingredient;

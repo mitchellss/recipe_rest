@@ -12,13 +12,13 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="ID")
+    @Column(name="id")
     private Long id;
 
-    @Column(name="TITLE")
+    @Column(name="title")
     private String title;
 
-    @Column(name="DATETIME")
+    @Column(name="recipe_datetime")
     //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private String datetime;
 

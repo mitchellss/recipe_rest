@@ -8,17 +8,17 @@ public class Step {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "STEP_NUMBER")
+    @Column(name = "step_number")
     private Long step_number;
 
-    @Column(name = "TEXT")
+    @Column(name = "step_text")
     private String text;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "RECIPE_ID")
+    @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
     public Step() { super(); }
