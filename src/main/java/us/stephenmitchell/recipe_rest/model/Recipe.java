@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "recipe")
-public class RecipeModel {
+public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,19 +22,22 @@ public class RecipeModel {
     //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private String datetime;
 
-    public RecipeModel() {
+    public Recipe() {
         super();
     }
 
-    public RecipeModel(long id, String title, String datetime) {
+    public Recipe(String title, String datetime) {
         super();
-        this.id = id;
         this.title = title;
         this.datetime = datetime;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -51,5 +54,14 @@ public class RecipeModel {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    @Override
+    public String toString() {
+        return "RecipeModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", datetime='" + datetime + '\'' +
+                '}';
     }
 }
