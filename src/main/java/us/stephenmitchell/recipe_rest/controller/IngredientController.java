@@ -31,7 +31,7 @@ public class IngredientController {
     }
 
 
-    @GetMapping("/get_ingredient")
+    @GetMapping("/ingredient")
     public CollectionModel<EntityModel<Ingredient>> all() {
         List<EntityModel<Ingredient>> recipes = StreamSupport
                 .stream(ingredientRepository.findAll().spliterator(), false)
@@ -41,17 +41,34 @@ public class IngredientController {
                 linkTo(methodOn(IngredientController.class).all()).withSelfRel());
     }
 
-    @PostMapping("/post_ingredient")
+    @PostMapping("/ingredient")
     public String postIngredient(@RequestBody Ingredient ingredient) {
         ingredientRepository.save(ingredient);
         return ingredient.toString();
     }
 
-    @GetMapping("/get_ingredient/{id}")
+    @GetMapping("/ingredient/{id}")
     public EntityModel<Ingredient> one(@PathVariable Long id) {
         Ingredient ingredient= ingredientRepository.findById(id)
                 .orElseThrow(() -> new IngredientNotFoundException(id));
 
         return ingredientAssembler.toModel(ingredient);
+    }
+
+    @PutMapping("/ingredient/{id}")
+    public EntityModel<Ingredient> replaceIngredient(@RequestBody Ingredient newIngredient, @PathVariable Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new IngredientNotFoundException(id));
+
+        ingredient.setName(newIngredient.getName());
+        ingredient.setGrams(newIngredient.getGrams());
+        ingredient.setMeasurement(newIngredient.getMeasurement());
+        ingredientRepository.save(ingredient);
+        return ingredientAssembler.toModel(ingredient);
+    }
+
+    @DeleteMapping("/ingredient/{id}")
+    public void deleteIngredient(@PathVariable Long id) {
+        ingredientRepository.deleteById(id);
     }
 }

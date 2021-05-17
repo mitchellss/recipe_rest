@@ -24,9 +24,8 @@ public class Ingredient {
         super();
     }
 
-    public Ingredient(Long id, String name, String measurement, Long grams) {
+    public Ingredient(String name, String measurement, Long grams) {
         super();
-        this.id = id;
         this.name = name;
         this.measurement = measurement;
         this.grams = grams;
@@ -34,6 +33,10 @@ public class Ingredient {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
