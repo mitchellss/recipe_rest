@@ -6,10 +6,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 import us.stephenmitchell.recipe_rest.assembler.IngredientAssembler;
 import us.stephenmitchell.recipe_rest.exception.IngredientNotFoundException;
-import us.stephenmitchell.recipe_rest.exception.RecipeNotFoundException;
 import us.stephenmitchell.recipe_rest.model.Ingredient;
-import us.stephenmitchell.recipe_rest.model.Recipe;
-import us.stephenmitchell.recipe_rest.model.Step;
 import us.stephenmitchell.recipe_rest.repository.IngredientRepository;
 
 import java.util.List;
