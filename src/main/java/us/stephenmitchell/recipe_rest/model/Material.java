@@ -11,26 +11,26 @@ public class Material {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "RECIPE_ID")
+    @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    @Column(name = "MATERIAL_NUMBER")
+    @Column(name = "material_number")
     private Long material_number;
 
-    @Column(name = "MEASUREMENT")
+    @Column(name = "measurement")
     private String measurement;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "INGREDIENT")
+    @JoinColumn(name = "ingredient_id")
     @Getter
     @Setter
     private Ingredient ingredient;
 
-    @Column(name = "NOTE")
+    @Column(name = "note")
     private String note;
 
     public Material() {
