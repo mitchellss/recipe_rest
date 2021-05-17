@@ -8,6 +8,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import us.stephenmitchell.recipe_rest.assembler.RecipeAssembler;
 import us.stephenmitchell.recipe_rest.exception.RecipeNotFoundException;
+import us.stephenmitchell.recipe_rest.exception.RecipeNotFoundException;
+import us.stephenmitchell.recipe_rest.model.Recipe;
 import us.stephenmitchell.recipe_rest.repository.RecipeRepository;
 import us.stephenmitchell.recipe_rest.model.Recipe;
 
@@ -29,7 +31,7 @@ public class RecipeController {
         this.recipeAssembler = recipeAssembler;
     }
 
-    @GetMapping("/get_recipe")
+    @GetMapping("/recipe")
     public CollectionModel<EntityModel<Recipe>> all() {
         List<EntityModel<Recipe>> recipes = StreamSupport
                 .stream(recipeRepository.findAll().spliterator(), false)
@@ -39,13 +41,13 @@ public class RecipeController {
                 linkTo(methodOn(RecipeController.class).all()).withSelfRel());
     }
 
-    @PostMapping("/post_recipe")
+    @PostMapping("/recipe")
     public String postRecipe(@RequestBody Recipe recipe) {
         recipeRepository.save(recipe);
         return recipe.toString();
     }
 
-    @GetMapping("/get_recipe/{id}")
+    @GetMapping("/recipe/{id}")
     public EntityModel<Recipe> one(@PathVariable Long id) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RecipeNotFoundException(id));
@@ -53,4 +55,19 @@ public class RecipeController {
         return recipeAssembler.toModel(recipe);
     }
 
+    @PutMapping("/recipe/{id}")
+    public EntityModel<Recipe> replaceRecipe(@RequestBody Recipe newRecipe, @PathVariable Long id) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RecipeNotFoundException(id));
+
+        recipe.setTitle(newRecipe.getTitle());
+        recipe.setDatetime(newRecipe.getDatetime());
+        recipeRepository.save(recipe);
+        return recipeAssembler.toModel(recipe);
+    }
+
+    @DeleteMapping("/recipe/{id}")
+    public void deleteRecipe(@PathVariable Long id) {
+        recipeRepository.deleteById(id);
+    }
 }
