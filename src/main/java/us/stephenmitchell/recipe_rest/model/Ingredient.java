@@ -8,16 +8,16 @@ public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name="NAME")
+    @Column(name="name")
     private String name;
 
-    @Column(name="MEASUREMENT")
+    @Column(name="measurement")
     private String measurement;
 
-    @Column(name = "GRAMS")
+    @Column(name = "grams")
     private Long grams;
 
     public Ingredient() {
