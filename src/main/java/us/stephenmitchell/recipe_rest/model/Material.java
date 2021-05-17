@@ -14,7 +14,7 @@ public class Material {
     @Column(name = "ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "RECIPE_ID")
     private Recipe recipe;
 
@@ -24,7 +24,7 @@ public class Material {
     @Column(name = "MEASUREMENT")
     private String measurement;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "INGREDIENT")
     @Getter
     @Setter
