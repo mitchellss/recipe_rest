@@ -17,16 +17,17 @@ public class Step {
     @Column(name = "TEXT")
     private String text;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "RECIPE_ID")
     private Recipe recipe;
 
     public Step() { super(); }
 
-    public Step(Long id, String text) {
+    public Step(Long step_number, String text, Recipe recipe) {
         super();
-        this.id = id;
+        this.step_number = step_number;
         this.text = text;
+        this.recipe = recipe;
     }
 
     public Long getId() {
