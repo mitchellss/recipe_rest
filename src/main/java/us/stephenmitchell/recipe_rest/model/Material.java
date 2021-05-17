@@ -33,6 +33,20 @@ public class Material {
     @Column(name = "NOTE")
     private String note;
 
+    public Material() {
+        super();
+    }
+
+    public Material(Recipe recipe, Long material_number, String measurement,
+                    Ingredient ingredient, String note) {
+        super();
+        this.recipe = recipe;
+        this.material_number = material_number;
+        this.measurement = measurement;
+        this.ingredient = ingredient;
+        this.note = note;
+    }
+
     public Long getId() {
         return id;
     }

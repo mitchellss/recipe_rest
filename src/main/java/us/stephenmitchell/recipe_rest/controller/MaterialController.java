@@ -6,6 +6,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 import us.stephenmitchell.recipe_rest.assembler.MaterialAssembler;
 import us.stephenmitchell.recipe_rest.exception.MaterialNotFoundException;
+import us.stephenmitchell.recipe_rest.exception.MaterialNotFoundException;
+import us.stephenmitchell.recipe_rest.model.Material;
 import us.stephenmitchell.recipe_rest.model.Material;
 import us.stephenmitchell.recipe_rest.repository.MaterialRepository;
 
@@ -25,13 +27,13 @@ public class MaterialController {
 
     MaterialAssembler materialAssembler;
 
-    MaterialController(MaterialRepository materialRepository, MaterialAssembler materialAssembler) {
+    public MaterialController(MaterialRepository materialRepository, MaterialAssembler materialAssembler) {
         this.materialRepository = materialRepository;
         this.materialAssembler = materialAssembler;
     }
 
 
-    @GetMapping("/get_material")
+    @GetMapping("/material")
     public CollectionModel<EntityModel<Material>> all() {
         List<EntityModel<Material>> recipes = StreamSupport
                 .stream(materialRepository.findAll().spliterator(), false)
@@ -41,17 +43,36 @@ public class MaterialController {
                 linkTo(methodOn(MaterialController.class).all()).withSelfRel());
     }
 
-    @PostMapping("/post_material")
+    @PostMapping("/material")
     public String postMaterial(@RequestBody Material material) {
         materialRepository.save(material);
         return material.toString();
     }
 
-    @GetMapping("/get_material/{id}")
+    @GetMapping("/material/{id}")
     public EntityModel<Material> one(@PathVariable Long id) {
         Material material= materialRepository.findById(id)
                 .orElseThrow(() -> new MaterialNotFoundException(id));
 
         return materialAssembler.toModel(material);
+    }
+
+    @PutMapping("/material/{id}")
+    public EntityModel<Material> replaceMaterial(@RequestBody Material newMaterial, @PathVariable Long id) {
+        Material material = materialRepository.findById(id)
+                .orElseThrow(() -> new MaterialNotFoundException(id));
+
+        material.setRecipe(newMaterial.getRecipe());
+        material.setMaterial_number(newMaterial.getMaterial_number());
+        material.setMeasurement(newMaterial.getMeasurement());
+        material.setIngredient(newMaterial.getIngredient());
+        material.setNote(newMaterial.getNote());
+        materialRepository.save(material);
+        return materialAssembler.toModel(material);
+    }
+
+    @DeleteMapping("/material/{id}")
+    public void deleteMaterial(@PathVariable Long id) {
+        materialRepository.deleteById(id);
     }
 }
