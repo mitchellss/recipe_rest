@@ -21,7 +21,24 @@ var defaultHandlerTmpl = `
     <title>Choose Your Own Adventure</title>
 </head>
 <body>
-    <h1>Test123</h1>
+    <h1>{{.Title}}</h1>
+	<p>Posted: {{.Datetime}}</p>
+	<p>Author: {{.Author}}</p>
+	<p>Active Time: {{.ActiveTime}} minutes</p>
+	<p>Total Time: {{.TotalTime}} minutes</p>
+	<p>Serves: {{.ServesLow}} - {{.ServesHigh}}</p>
+	<h2>Ingredients</h2>
+	<ul>
+		{{range .Ingredients}}
+			<li>{{.Quantity}} {{.Unit}}</li>
+		{{end}}
+	</ul>
+	<h2>Steps</h2>
+	<ol>
+		{{range .Steps}}
+			<li>{{.StepText}}</li>
+		{{end}}
+	</ol>
 </body>
 </html>`
 
@@ -52,13 +69,13 @@ type Measurement struct {
 	Unit     string  `yaml:"unit,omitempty"`
 }
 
+type handler struct {
+	r Recipe
+}
+
 func NewHandler(r Recipe) http.Handler {
 	h := handler{r}
 	return h
-}
-
-type handler struct {
-	r Recipe
 }
 
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

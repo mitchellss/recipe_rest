@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 
 	"github.com/mitchellss/recipe_rest"
 	"gopkg.in/yaml.v3"
@@ -12,7 +13,7 @@ import (
 
 func main() {
 	file := flag.String("file", "recipe.yaml", "The YAML file that contains the recipe")
-	//port := flag.Int("port", 3000, "The port to host the application on")
+	port := flag.Int("port", 3000, "The port to host the application on")
 	flag.Parse()
 
 	fmt.Printf("The recipe being displayed is %s\n", *file)
@@ -29,10 +30,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%+v\n", recipe)
+	handler := recipe_rest.NewHandler(recipe)
 
-	// handler := recipe_rest.NewHandler(recipe)
+	mux := http.NewServeMux()
+	mux.Handle("/recipe/", handler)
 
-	// fmt.Printf("Starting server on port %d\n", *port)
-	// log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), handler))
+	fmt.Printf("Starting server on port %d\n", *port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), mux))
 }
