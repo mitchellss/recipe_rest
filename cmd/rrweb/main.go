@@ -1,40 +1,22 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/mitchellss/recipe_rest"
-	"gopkg.in/yaml.v3"
+	"github.com/mitchellss/recipe_rest/pkg/http/rest"
+	"github.com/mitchellss/recipe_rest/pkg/service"
+	"github.com/mitchellss/recipe_rest/pkg/storage/memory"
 )
 
 func main() {
-	file := flag.String("file", "recipe.yaml", "The YAML file that contains the recipe")
-	port := flag.Int("port", 3000, "The port to host the application on")
-	flag.Parse()
+	var crudService service.Service
+	repository := new(memory.Storage)
 
-	fmt.Printf("The recipe being displayed is %s\n", *file)
+	crudService = service.NewService(repository)
+	router := rest.Handler(crudService)
 
-	recipeFile, err := ioutil.ReadFile(*file)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var recipe recipe_rest.Recipe
-
-	err = yaml.Unmarshal(recipeFile, &recipe)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	handler := recipe_rest.NewHandler(recipe)
-
-	mux := http.NewServeMux()
-	mux.Handle("/recipe/", handler)
-
-	fmt.Printf("Starting server on port %d\n", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), mux))
+	fmt.Println("The recipe server live now at: http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
