@@ -7,12 +7,12 @@ import (
 
 	"github.com/mitchellss/recipe_rest/pkg/http/rest"
 	"github.com/mitchellss/recipe_rest/pkg/service"
-	"github.com/mitchellss/recipe_rest/pkg/storage/memory"
+	"github.com/mitchellss/recipe_rest/pkg/storage/json"
 )
 
 func main() {
 	var crudService service.Service
-	repository := new(memory.Storage)
+	repository, _ := json.NewStorage()
 
 	crudService = service.NewService(repository)
 	router := rest.Handler(crudService)
