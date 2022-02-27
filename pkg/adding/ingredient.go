@@ -1,4 +1,4 @@
-package service
+package adding
 
 type Ingredient struct {
 	Name     string `json:"name"`

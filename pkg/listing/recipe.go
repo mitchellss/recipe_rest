@@ -1,8 +1,9 @@
-package service
+package listing
 
 import "time"
 
 type Recipe struct {
+	ID         string    `json:"id"`
 	Title      string    `json:"title"`
 	Author     string    `json:"author"`
 	ActiveTime int       `json:"active_time"`

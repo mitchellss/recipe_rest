@@ -2,12 +2,15 @@ package json
 
 import (
 	"encoding/json"
+	"math/rand"
 	"path"
 	"runtime"
 	"time"
 
-	"github.com/mitchellss/recipe_rest/pkg/service"
+	"github.com/mitchellss/recipe_rest/pkg/adding"
+	"github.com/mitchellss/recipe_rest/pkg/listing"
 	scribble "github.com/nanobox-io/golang-scribble"
+	"github.com/segmentio/ksuid"
 )
 
 const (
@@ -37,7 +40,7 @@ func NewStorage() (*Storage, error) {
 	return s, nil
 }
 
-func (s *Storage) AddRecipe(recipe service.Recipe) error {
+func (s *Storage) AddRecipe(recipe adding.Recipe) error {
 
 	var steps []Step
 	for i := range recipe.Steps {
@@ -48,10 +51,13 @@ func (s *Storage) AddRecipe(recipe service.Recipe) error {
 		})
 	}
 
-	recipeId := "12345"
+	recipeId, err := ksuid.NewRandom()
+	if err != nil {
+		return err
+	}
 
 	newRecipe := Recipe{
-		ID:         recipeId,
+		ID:         recipeId.String(),
 		Title:      recipe.Title,
 		Author:     recipe.Author,
 		ActiveTime: recipe.ActiveTime,
@@ -68,8 +74,18 @@ func (s *Storage) AddRecipe(recipe service.Recipe) error {
 	return nil
 }
 
-func (s *Storage) GetAllRecipes() []service.Recipe {
-	list := []service.Recipe{}
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+
+func RandStringBytesRmndr(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
+	}
+	return string(b)
+}
+
+func (s *Storage) GetAllRecipes() []listing.Recipe {
+	list := []listing.Recipe{}
 
 	records, err := s.db.ReadAll(CollectionRecipe)
 	if err != nil {
@@ -78,12 +94,13 @@ func (s *Storage) GetAllRecipes() []service.Recipe {
 
 	for _, r := range records {
 		var jsonRecipe Recipe
-		var serviceRecipe service.Recipe
+		var serviceRecipe listing.Recipe
 
 		if err := json.Unmarshal([]byte(r), &jsonRecipe); err != nil {
 			return list
 		}
 
+		serviceRecipe.ID = jsonRecipe.ID
 		serviceRecipe.Title = jsonRecipe.Title
 		serviceRecipe.Author = jsonRecipe.Author
 		serviceRecipe.ActiveTime = jsonRecipe.ActiveTime
@@ -92,9 +109,9 @@ func (s *Storage) GetAllRecipes() []service.Recipe {
 		serviceRecipe.ServesLow = jsonRecipe.ServesLow
 		serviceRecipe.Created = jsonRecipe.Created
 
-		var steps []service.Step
+		var steps []listing.Step
 		for i := range jsonRecipe.Steps {
-			steps = append(steps, service.Step{
+			steps = append(steps, listing.Step{
 				StepNumber:    jsonRecipe.Steps[i].StepNumber,
 				Text:          jsonRecipe.Steps[i].Text,
 				IngredientIDs: jsonRecipe.Steps[i].IngredientIDs,
@@ -107,22 +124,23 @@ func (s *Storage) GetAllRecipes() []service.Recipe {
 	return list
 }
 
-func (s *Storage) GetRecipe(id string) service.Recipe {
-	var serviceRecipe service.Recipe
+func (s *Storage) GetRecipe(id string) (listing.Recipe, error) {
+	var serviceRecipe listing.Recipe
 
 	records, err := s.db.ReadAll(CollectionRecipe)
 	if err != nil {
-		return serviceRecipe
+		return serviceRecipe, err
 	}
 
 	for _, r := range records {
 		var jsonRecipe Recipe
 
 		if err := json.Unmarshal([]byte(r), &jsonRecipe); err != nil {
-			return serviceRecipe
+			return serviceRecipe, err
 		}
 
 		if jsonRecipe.ID == id {
+			serviceRecipe.ID = jsonRecipe.ID
 			serviceRecipe.Title = jsonRecipe.Title
 			serviceRecipe.Author = jsonRecipe.Author
 			serviceRecipe.ActiveTime = jsonRecipe.ActiveTime
@@ -131,9 +149,9 @@ func (s *Storage) GetRecipe(id string) service.Recipe {
 			serviceRecipe.ServesLow = jsonRecipe.ServesLow
 			serviceRecipe.Created = jsonRecipe.Created
 
-			var steps []service.Step
+			var steps []listing.Step
 			for i := range jsonRecipe.Steps {
-				steps = append(steps, service.Step{
+				steps = append(steps, listing.Step{
 					StepNumber:    jsonRecipe.Steps[i].StepNumber,
 					Text:          jsonRecipe.Steps[i].Text,
 					IngredientIDs: jsonRecipe.Steps[i].IngredientIDs,
@@ -141,12 +159,12 @@ func (s *Storage) GetRecipe(id string) service.Recipe {
 			}
 			serviceRecipe.Steps = steps
 
-			return serviceRecipe
+			return serviceRecipe, nil
 		}
 	}
-	return service.Recipe{}
+	return listing.Recipe{}, listing.ErrNotFound
 }
 
-// Update method
+// UpdateRecipe
 
-// Delete method
+// DeleteRecipe

@@ -3,14 +3,16 @@ package memory
 import (
 	"time"
 
-	"github.com/mitchellss/recipe_rest/pkg/service"
+	"github.com/mitchellss/recipe_rest/pkg/adding"
+	"github.com/mitchellss/recipe_rest/pkg/listing"
+	"github.com/mitchellss/recipe_rest/pkg/storage"
 )
 
 type Storage struct {
 	recipes []Recipe
 }
 
-func (m *Storage) AddRecipe(recipe service.Recipe) error {
+func (m *Storage) AddRecipe(recipe adding.Recipe) error {
 
 	var steps []Step
 	for i := range recipe.Steps {
@@ -21,7 +23,10 @@ func (m *Storage) AddRecipe(recipe service.Recipe) error {
 		})
 	}
 
-	recipeId := "12345"
+	recipeId, err := storage.GenerateID()
+	if err != nil {
+		return err
+	}
 
 	newRecipe := Recipe{
 		ID:         recipeId,
@@ -39,21 +44,22 @@ func (m *Storage) AddRecipe(recipe service.Recipe) error {
 	return nil
 }
 
-func (m *Storage) GetAllRecipes() []service.Recipe {
-	var recipes []service.Recipe
+func (m *Storage) GetAllRecipes() []listing.Recipe {
+	var recipes []listing.Recipe
 
 	for i := range m.recipes {
 
-		var steps []service.Step
+		var steps []listing.Step
 		for i := range m.recipes[i].Steps {
-			steps = append(steps, service.Step{
+			steps = append(steps, listing.Step{
 				StepNumber:    m.recipes[i].Steps[i].StepNumber,
 				Text:          m.recipes[i].Steps[i].Text,
 				IngredientIDs: m.recipes[i].Steps[i].IngredientIDs,
 			})
 		}
 
-		recipe := service.Recipe{
+		recipe := listing.Recipe{
+			ID:         m.recipes[i].ID,
 			Title:      m.recipes[i].Title,
 			Author:     m.recipes[i].Author,
 			ActiveTime: m.recipes[i].ActiveTime,
@@ -68,18 +74,34 @@ func (m *Storage) GetAllRecipes() []service.Recipe {
 	return recipes
 }
 
-func (m *Storage) GetRecipe(id string) service.Recipe {
-	var newRecipe service.Recipe
+func (m *Storage) GetRecipe(id string) (listing.Recipe, error) {
 	for i := range m.recipes {
 		if m.recipes[i].ID == id {
-			newRecipe.Title = m.recipes[i].Title
-			newRecipe.Created = m.recipes[i].Created
-			return newRecipe
+			var steps []listing.Step
+			for i := range m.recipes[i].Steps {
+				steps = append(steps, listing.Step{
+					StepNumber:    m.recipes[i].Steps[i].StepNumber,
+					Text:          m.recipes[i].Steps[i].Text,
+					IngredientIDs: m.recipes[i].Steps[i].IngredientIDs,
+				})
+			}
+			newRecipe := listing.Recipe{
+				ID:         m.recipes[i].ID,
+				Title:      m.recipes[i].Title,
+				Author:     m.recipes[i].Author,
+				ActiveTime: m.recipes[i].ActiveTime,
+				TotalTime:  m.recipes[i].TotalTime,
+				ServesHigh: m.recipes[i].ServesHigh,
+				ServesLow:  m.recipes[i].ServesLow,
+				Created:    m.recipes[i].Created,
+				Steps:      steps,
+			}
+			return newRecipe, nil
 		}
 	}
-	return service.Recipe{}
+	return listing.Recipe{}, listing.ErrNotFound
 }
 
-// Update method
+// func (m *Storage) UpdateRecipe(id string, service.Recipe) {}
 
-// Delete method
+// func (m *Storage) DeleteRecipe(id string) {}
