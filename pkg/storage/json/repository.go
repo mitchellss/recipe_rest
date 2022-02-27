@@ -37,6 +37,37 @@ func NewStorage() (*Storage, error) {
 	return s, nil
 }
 
+func (s *Storage) AddRecipe(recipe service.Recipe) error {
+
+	var steps []Step
+	for i := range recipe.Steps {
+		steps = append(steps, Step{
+			StepNumber:    recipe.Steps[i].StepNumber,
+			Text:          recipe.Steps[i].Text,
+			IngredientIDs: recipe.Steps[i].IngredientIDs,
+		})
+	}
+
+	recipeId := "12345"
+
+	newRecipe := Recipe{
+		ID:         recipeId,
+		Title:      recipe.Title,
+		Author:     recipe.Author,
+		ActiveTime: recipe.ActiveTime,
+		TotalTime:  recipe.TotalTime,
+		ServesHigh: recipe.ServesHigh,
+		ServesLow:  recipe.ServesLow,
+		Created:    time.Now(),
+		Steps:      steps,
+	}
+
+	if err := s.db.Write(CollectionRecipe, newRecipe.ID, newRecipe); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *Storage) GetAllRecipes() []service.Recipe {
 	list := []service.Recipe{}
 
@@ -46,54 +77,76 @@ func (s *Storage) GetAllRecipes() []service.Recipe {
 	}
 
 	for _, r := range records {
-		var recipe1 Recipe
-		var recipe2 service.Recipe
+		var jsonRecipe Recipe
+		var serviceRecipe service.Recipe
 
-		if err := json.Unmarshal([]byte(r), &recipe1); err != nil {
+		if err := json.Unmarshal([]byte(r), &jsonRecipe); err != nil {
 			return list
 		}
 
-		recipe2.ID = recipe1.ID
-		recipe2.Created = recipe1.Created
-		recipe2.Name = recipe1.Name
+		serviceRecipe.Title = jsonRecipe.Title
+		serviceRecipe.Author = jsonRecipe.Author
+		serviceRecipe.ActiveTime = jsonRecipe.ActiveTime
+		serviceRecipe.TotalTime = jsonRecipe.TotalTime
+		serviceRecipe.ServesHigh = jsonRecipe.ServesHigh
+		serviceRecipe.ServesLow = jsonRecipe.ServesLow
+		serviceRecipe.Created = jsonRecipe.Created
 
 		var steps []service.Step
-		for i := range recipe1.Steps {
+		for i := range jsonRecipe.Steps {
 			steps = append(steps, service.Step{
-				StepNumber: recipe1.Steps[i].StepNumber,
-				Text:       recipe1.Steps[i].Text,
+				StepNumber:    jsonRecipe.Steps[i].StepNumber,
+				Text:          jsonRecipe.Steps[i].Text,
+				IngredientIDs: jsonRecipe.Steps[i].IngredientIDs,
 			})
 		}
-		recipe2.Steps = steps
+		serviceRecipe.Steps = steps
 
-		list = append(list, recipe2)
+		list = append(list, serviceRecipe)
 	}
 	return list
 }
 
-func (s *Storage) AddRecipe(recipe service.Recipe) error {
-
-	var steps []Step
-	for i := range recipe.Steps {
-		steps = append(steps, Step{
-			StepNumber: recipe.Steps[i].StepNumber,
-			Text:       recipe.Steps[i].Text,
-		})
-	}
-
-	newRecipe := Recipe{
-		ID:      recipe.ID,
-		Name:    recipe.Name,
-		Created: time.Now(),
-		Steps:   steps,
-	}
-
-	if err := s.db.Write(CollectionRecipe, newRecipe.ID, newRecipe); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (s *Storage) GetRecipe(id string) service.Recipe {
+	var serviceRecipe service.Recipe
+
+	records, err := s.db.ReadAll(CollectionRecipe)
+	if err != nil {
+		return serviceRecipe
+	}
+
+	for _, r := range records {
+		var jsonRecipe Recipe
+
+		if err := json.Unmarshal([]byte(r), &jsonRecipe); err != nil {
+			return serviceRecipe
+		}
+
+		if jsonRecipe.ID == id {
+			serviceRecipe.Title = jsonRecipe.Title
+			serviceRecipe.Author = jsonRecipe.Author
+			serviceRecipe.ActiveTime = jsonRecipe.ActiveTime
+			serviceRecipe.TotalTime = jsonRecipe.TotalTime
+			serviceRecipe.ServesHigh = jsonRecipe.ServesHigh
+			serviceRecipe.ServesLow = jsonRecipe.ServesLow
+			serviceRecipe.Created = jsonRecipe.Created
+
+			var steps []service.Step
+			for i := range jsonRecipe.Steps {
+				steps = append(steps, service.Step{
+					StepNumber:    jsonRecipe.Steps[i].StepNumber,
+					Text:          jsonRecipe.Steps[i].Text,
+					IngredientIDs: jsonRecipe.Steps[i].IngredientIDs,
+				})
+			}
+			serviceRecipe.Steps = steps
+
+			return serviceRecipe
+		}
+	}
 	return service.Recipe{}
 }
+
+// Update method
+
+// Delete method
