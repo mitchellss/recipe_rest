@@ -3,12 +3,12 @@ package json
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"path"
 	"runtime"
 	"time"
 
 	"github.com/mitchellss/recipe_rest/pkg/adding"
+	"github.com/mitchellss/recipe_rest/pkg/deleting"
 	"github.com/mitchellss/recipe_rest/pkg/listing"
 	"github.com/mitchellss/recipe_rest/pkg/updating"
 	scribble "github.com/nanobox-io/golang-scribble"
@@ -74,16 +74,6 @@ func (s *Storage) AddRecipe(recipe adding.Recipe) error {
 		return err
 	}
 	return nil
-}
-
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-
-func RandStringBytesRmndr(n int) string {
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
-	}
-	return string(b)
 }
 
 func (s *Storage) GetAllRecipes() []listing.Recipe {
@@ -204,5 +194,8 @@ func (s *Storage) UpdateRecipe(id string, recipe updating.Recipe) error {
 }
 
 func (s *Storage) DeleteRecipe(id string) error {
+	if err := s.db.Delete(CollectionRecipe, id); err != nil {
+		return deleting.ErrNotFound
+	}
 	return nil
 }
