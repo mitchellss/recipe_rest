@@ -6,6 +6,7 @@ import (
 	"github.com/mitchellss/recipe_rest/pkg/adding"
 	"github.com/mitchellss/recipe_rest/pkg/listing"
 	"github.com/mitchellss/recipe_rest/pkg/storage"
+	"github.com/mitchellss/recipe_rest/pkg/updating"
 )
 
 type Storage struct {
@@ -102,6 +103,10 @@ func (m *Storage) GetRecipe(id string) (listing.Recipe, error) {
 	return listing.Recipe{}, listing.ErrNotFound
 }
 
-// func (m *Storage) UpdateRecipe(id string, service.Recipe) {}
+func (m *Storage) UpdateRecipe(id string, recipe updating.Recipe) error {
+	return nil
+}
 
-// func (m *Storage) DeleteRecipe(id string) {}
+func (m *Storage) DeleteRecipe(id string) error {
+	return nil
+}

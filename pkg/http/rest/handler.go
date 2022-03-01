@@ -7,13 +7,15 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/mitchellss/recipe_rest/pkg/adding"
 	"github.com/mitchellss/recipe_rest/pkg/listing"
+	"github.com/mitchellss/recipe_rest/pkg/updating"
 )
 
-func Handler(a adding.Service, l listing.Service) http.Handler {
+func Handler(a adding.Service, l listing.Service, u updating.Service) http.Handler {
 	router := httprouter.New()
 	router.GET("/recipes", getRecipes(l))
 	router.GET("/recipe/:id", getRecipe(l))
 	router.POST("/add", addRecipe(a))
+	router.PUT("/recipe/:id", updateRecipe(u))
 	return router
 }
 
@@ -53,4 +55,27 @@ func getRecipes(crudService listing.Service) func(w http.ResponseWriter, r *http
 		list := crudService.GetAllRecipes()
 		json.NewEncoder(w).Encode(list)
 	}
+}
+
+func updateRecipe(crudService updating.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		var newRecipe updating.Recipe
+
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&newRecipe)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		err = crudService.UpdateRecipe(p.ByName("id"), newRecipe)
+		if err == updating.ErrNotFound {
+			http.Error(w, "The recipe you requested does not exist.", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode("Recipe updated.")
+	}
+
 }

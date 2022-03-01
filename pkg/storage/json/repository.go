@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"path"
 	"runtime"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/mitchellss/recipe_rest/pkg/adding"
 	"github.com/mitchellss/recipe_rest/pkg/listing"
+	"github.com/mitchellss/recipe_rest/pkg/updating"
 	scribble "github.com/nanobox-io/golang-scribble"
 	"github.com/segmentio/ksuid"
 )
@@ -126,45 +128,81 @@ func (s *Storage) GetAllRecipes() []listing.Recipe {
 
 func (s *Storage) GetRecipe(id string) (listing.Recipe, error) {
 	var serviceRecipe listing.Recipe
+	var jsonRecipe Recipe
 
-	records, err := s.db.ReadAll(CollectionRecipe)
+	err := s.db.Read(CollectionRecipe, id, &jsonRecipe)
 	if err != nil {
-		return serviceRecipe, err
+		fmt.Println(err)
+		return serviceRecipe, listing.ErrNotFound
 	}
 
-	for _, r := range records {
-		var jsonRecipe Recipe
+	serviceRecipe.ID = jsonRecipe.ID
+	serviceRecipe.Title = jsonRecipe.Title
+	serviceRecipe.Author = jsonRecipe.Author
+	serviceRecipe.ActiveTime = jsonRecipe.ActiveTime
+	serviceRecipe.TotalTime = jsonRecipe.TotalTime
+	serviceRecipe.ServesHigh = jsonRecipe.ServesHigh
+	serviceRecipe.ServesLow = jsonRecipe.ServesLow
+	serviceRecipe.Created = jsonRecipe.Created
 
-		if err := json.Unmarshal([]byte(r), &jsonRecipe); err != nil {
-			return serviceRecipe, err
-		}
-
-		if jsonRecipe.ID == id {
-			serviceRecipe.ID = jsonRecipe.ID
-			serviceRecipe.Title = jsonRecipe.Title
-			serviceRecipe.Author = jsonRecipe.Author
-			serviceRecipe.ActiveTime = jsonRecipe.ActiveTime
-			serviceRecipe.TotalTime = jsonRecipe.TotalTime
-			serviceRecipe.ServesHigh = jsonRecipe.ServesHigh
-			serviceRecipe.ServesLow = jsonRecipe.ServesLow
-			serviceRecipe.Created = jsonRecipe.Created
-
-			var steps []listing.Step
-			for i := range jsonRecipe.Steps {
-				steps = append(steps, listing.Step{
-					StepNumber:    jsonRecipe.Steps[i].StepNumber,
-					Text:          jsonRecipe.Steps[i].Text,
-					IngredientIDs: jsonRecipe.Steps[i].IngredientIDs,
-				})
-			}
-			serviceRecipe.Steps = steps
-
-			return serviceRecipe, nil
-		}
+	var steps []listing.Step
+	for i := range jsonRecipe.Steps {
+		steps = append(steps, listing.Step{
+			StepNumber:    jsonRecipe.Steps[i].StepNumber,
+			Text:          jsonRecipe.Steps[i].Text,
+			IngredientIDs: jsonRecipe.Steps[i].IngredientIDs,
+		})
 	}
-	return listing.Recipe{}, listing.ErrNotFound
+	serviceRecipe.Steps = steps
+
+	return serviceRecipe, nil
 }
 
-// UpdateRecipe
+func (s *Storage) UpdateRecipe(id string, recipe updating.Recipe) error {
+	var jsonRecipe Recipe
+	err := s.db.Read(CollectionRecipe, id, &jsonRecipe)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
 
-// DeleteRecipe
+	if recipe.Title != "" {
+		jsonRecipe.Title = recipe.Title
+	}
+	if recipe.Author != "" {
+		jsonRecipe.Author = recipe.Author
+	}
+	if recipe.ActiveTime != 0 {
+		jsonRecipe.ActiveTime = recipe.ActiveTime
+	}
+	if recipe.TotalTime != 0 {
+		jsonRecipe.TotalTime = recipe.TotalTime
+	}
+	if recipe.ServesHigh != 0 {
+		jsonRecipe.ServesHigh = recipe.ServesHigh
+	}
+	if recipe.ServesLow != 0 {
+		jsonRecipe.ServesLow = recipe.ServesLow
+	}
+	if recipe.Steps != nil {
+		var steps []Step
+		for i := range recipe.Steps {
+			steps = append(steps, Step{
+				StepNumber:    recipe.Steps[i].StepNumber,
+				Text:          recipe.Steps[i].Text,
+				IngredientIDs: recipe.Steps[i].IngredientIDs,
+			})
+		}
+		jsonRecipe.Steps = steps
+	}
+
+	if err := s.db.Write(CollectionRecipe, jsonRecipe.ID, jsonRecipe); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) DeleteRecipe(id string) error {
+	return nil
+}
