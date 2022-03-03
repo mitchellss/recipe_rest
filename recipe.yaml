@@ -1,0 +1,19 @@
+title: Black Bean Burgers
+datetime: 1700
+author: J Kenji Lopez Alt
+active_time: 45
+total_time: 45
+serves_low: 6 burgers
+serves_high: 8 burgers
+ingredients:
+  black beans:
+    quantity: 2
+    unit: 12 oz cans
+  egg:
+    quantity: 1
+    unit: 1 large
+steps:
+  - step_number: 1
+    step_text: First give up
+  - step_number: 2
+    step_text: If you've made it this far you win
