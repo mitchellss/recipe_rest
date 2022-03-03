@@ -1,8 +1,9 @@
 package listing
 
 type Ingredient struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Quantity int    `json:"quantity"`
-	Unit     string `json:"unit"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Unit        string `json:"unit"`
+	MassInGrams int    `json:"mass_in_grams"`
+	Substitutes string `json:"substitutes"`
 }

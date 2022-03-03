@@ -13,11 +13,16 @@ import (
 
 func Handler(c adding.Service, r listing.Service, u updating.Service, d deleting.Service) http.Handler {
 	router := httprouter.New()
-	router.POST("/add", addRecipe(c))
-	router.GET("/recipes", getRecipes(r))
-	router.GET("/recipe/:id", getRecipe(r))
-	router.PUT("/recipe/:id", updateRecipe(u))
-	router.DELETE("/recipe/:id", deleteRecipe(d))
+	router.POST("/api/recipe", addRecipe(c))
+	router.POST("/api/ingredient", addIngredient(c))
+	router.GET("/api/recipe", getRecipes(r))
+	router.GET("/api/ingredient", getIngredients(r))
+	router.GET("/api/recipe/:id", getRecipe(r))
+	router.GET("/api/ingredient/:id", getIngredient(r))
+	router.PUT("/api/recipe/:id", updateRecipe(u))
+	router.PUT("/api/ingredient/:id", updateIngredient(u))
+	router.DELETE("/api/recipe/:id", deleteRecipe(d))
+	router.DELETE("/api/ingredient/:id", deleteIngredient(d))
 	return router
 }
 
@@ -35,6 +40,24 @@ func addRecipe(crudService adding.Service) func(w http.ResponseWriter, r *http.R
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode("New recipe added.")
+	}
+}
+
+func addIngredient(crudService adding.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		var newIngredient adding.Ingredient
+
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&newIngredient)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		crudService.AddIngredient(newIngredient)
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode("New ingredient added.")
+
 	}
 }
 
@@ -92,6 +115,64 @@ func deleteRecipe(crudService deleting.Service) func(w http.ResponseWriter, r *h
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode("Recipe deleted.")
+
+	}
+}
+
+func getIngredients(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Header().Set("Content-Type", "application/json")
+		list := crudService.GetAllIngredients()
+		json.NewEncoder(w).Encode(list)
+	}
+}
+
+func getIngredient(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		ingredient, err := crudService.GetIngredient(p.ByName("id"))
+		if err == listing.ErrNotFound {
+			http.Error(w, "The ingredient you requested does not exist.", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(ingredient)
+	}
+}
+
+func updateIngredient(crudService updating.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		var newIngredient updating.Ingredient
+
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&newIngredient)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		err = crudService.UpdateIngredient(p.ByName("id"), newIngredient)
+		if err == updating.ErrNotFound {
+			http.Error(w, "The ingredient you requested does not exist.", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode("Ingredient updated.")
+	}
+
+}
+
+func deleteIngredient(crudService deleting.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		err := crudService.DeleteIngredient(p.ByName("id"))
+		if err == deleting.ErrNotFound {
+			http.Error(w, "The ingredient you requested does not exist.", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode("Ingredient deleted.")
 
 	}
 }

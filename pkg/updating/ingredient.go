@@ -1,4 +1,4 @@
-package json
+package updating
 
 type Ingredient struct {
 	ID          string `json:"id"`

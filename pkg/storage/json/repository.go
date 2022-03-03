@@ -16,8 +16,9 @@ import (
 )
 
 const (
-	dir              = "/data/"
-	CollectionRecipe = "recipes"
+	dir                  = "/data/"
+	CollectionRecipe     = "recipes"
+	CollectionIngredient = "ingredients"
 )
 
 // Storage stores beer data in JSON files
@@ -195,6 +196,107 @@ func (s *Storage) UpdateRecipe(id string, recipe updating.Recipe) error {
 
 func (s *Storage) DeleteRecipe(id string) error {
 	if err := s.db.Delete(CollectionRecipe, id); err != nil {
+		return deleting.ErrNotFound
+	}
+	return nil
+}
+
+func (s *Storage) AddIngredient(ingredient adding.Ingredient) error {
+	ingredientId, err := ksuid.NewRandom()
+	if err != nil {
+		return err
+	}
+
+	newIngredient := Ingredient{
+		ID:          ingredientId.String(),
+		Name:        ingredient.Name,
+		Unit:        ingredient.Unit,
+		MassInGrams: ingredient.MassInGrams,
+		Substitutes: ingredient.Substitutes,
+	}
+
+	if err := s.db.Write(CollectionIngredient, newIngredient.ID, newIngredient); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Storage) GetAllIngredients() []listing.Ingredient {
+	list := []listing.Ingredient{}
+
+	records, err := s.db.ReadAll(CollectionIngredient)
+	if err != nil {
+		return list
+	}
+
+	for _, r := range records {
+		var jsonIngredient Ingredient
+		var serviceIngredient listing.Ingredient
+
+		if err := json.Unmarshal([]byte(r), &jsonIngredient); err != nil {
+			return list
+		}
+
+		serviceIngredient.ID = jsonIngredient.ID
+		serviceIngredient.Name = jsonIngredient.Name
+		serviceIngredient.Unit = jsonIngredient.Unit
+		serviceIngredient.MassInGrams = jsonIngredient.MassInGrams
+		serviceIngredient.Substitutes = jsonIngredient.Substitutes
+
+		list = append(list, serviceIngredient)
+	}
+	return list
+}
+
+func (s *Storage) GetIngredient(id string) (listing.Ingredient, error) {
+	var serviceIngredient listing.Ingredient
+	var jsonIngredient Ingredient
+
+	err := s.db.Read(CollectionIngredient, id, &jsonIngredient)
+	if err != nil {
+		fmt.Println(err)
+		return serviceIngredient, listing.ErrNotFound
+	}
+
+	serviceIngredient.ID = jsonIngredient.ID
+	serviceIngredient.Name = jsonIngredient.Name
+	serviceIngredient.Unit = jsonIngredient.Unit
+	serviceIngredient.MassInGrams = jsonIngredient.MassInGrams
+	serviceIngredient.Substitutes = jsonIngredient.Substitutes
+
+	return serviceIngredient, nil
+}
+
+func (s *Storage) UpdateIngredient(id string, ingredient updating.Ingredient) error {
+	var jsonIngredient Ingredient
+	err := s.db.Read(CollectionIngredient, id, &jsonIngredient)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	if ingredient.Name != "" {
+		jsonIngredient.Name = ingredient.Name
+	}
+	if ingredient.Unit != "" {
+		jsonIngredient.Unit = ingredient.Unit
+	}
+	if ingredient.MassInGrams != 0 {
+		jsonIngredient.MassInGrams = ingredient.MassInGrams
+	}
+	if ingredient.Substitutes != "" {
+		jsonIngredient.Substitutes = ingredient.Substitutes
+	}
+
+	if err := s.db.Write(CollectionIngredient, jsonIngredient.ID, jsonIngredient); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) DeleteIngredient(id string) error {
+	if err := s.db.Delete(CollectionIngredient, id); err != nil {
 		return deleting.ErrNotFound
 	}
 	return nil

@@ -8,15 +8,15 @@ var ErrNotFound = errors.New("recipe not found")
 type Service interface {
 	GetRecipe(id string) (Recipe, error)
 	GetAllRecipes() []Recipe
-	// GetIngredient(id string) Ingredient
-	// GetAllIngredients() []Ingredients
+	GetIngredient(id string) (Ingredient, error)
+	GetAllIngredients() []Ingredient
 }
 
 type Repository interface {
 	GetRecipe(id string) (Recipe, error)
 	GetAllRecipes() []Recipe
-	// GetIngredient(id string) Ingredient
-	// GetAllIngredients() []Ingredients
+	GetIngredient(id string) (Ingredient, error)
+	GetAllIngredients() []Ingredient
 }
 
 type service struct {
@@ -33,4 +33,12 @@ func (s *service) GetRecipe(id string) (Recipe, error) {
 
 func (s *service) GetAllRecipes() []Recipe {
 	return s.r.GetAllRecipes()
+}
+
+func (s *service) GetIngredient(id string) (Ingredient, error) {
+	return s.r.GetIngredient(id)
+}
+
+func (s *service) GetAllIngredients() []Ingredient {
+	return s.r.GetAllIngredients()
 }

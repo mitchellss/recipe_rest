@@ -7,10 +7,12 @@ var ErrNotFound = errors.New("recipe not found")
 
 type Service interface {
 	DeleteRecipe(id string) error
+	DeleteIngredient(id string) error
 }
 
 type Repository interface {
 	DeleteRecipe(id string) error
+	DeleteIngredient(id string) error
 }
 
 type service struct {
@@ -23,4 +25,8 @@ func NewService(r Repository) Service {
 
 func (s *service) DeleteRecipe(id string) error {
 	return s.r.DeleteRecipe(id)
+}
+
+func (s *service) DeleteIngredient(id string) error {
+	return s.r.DeleteIngredient(id)
 }
