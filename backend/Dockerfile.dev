@@ -1,12 +1,23 @@
+# Bulder
 FROM golang:alpine as builder
-RUN mkdir /build
-COPY . /build
-WORKDIR /build
-RUN go build -o main /build/cmd/rrweb/main.go
+RUN mkdir /app
+COPY . /app
+WORKDIR /app
+RUN go build -o main /app/cmd/rrweb/main.go
 
+# Runner
 FROM alpine
-RUN adduser -S -D -H -h /app appuser
+ENV USER=appuser
+RUN adduser \
+    --disabled-password \
+    --home "/app" \
+    --no-create-home \
+    "$USER"
+# RUN mkdir -p /app/data
+
+# COPY ./data /app/data
+COPY --from=builder /app/main /app/
+RUN chown -R "$USER" /app
 USER appuser
-COPY --from=builder /build/main /app/
 WORKDIR /app
 CMD ["./main"]

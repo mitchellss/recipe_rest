@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:17-alpine
 
 WORKDIR '/app'
 
@@ -7,7 +7,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY ./package.json .
 COPY ./yarn.lock .
 
-RUN yarn install react-scripts
+RUN yarn add react-scripts
 RUN yarn
 
 COPY . .

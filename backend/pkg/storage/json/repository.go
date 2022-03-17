@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	dir                  = "/data/"
+	dir                  = "../../../../data/"
 	CollectionRecipe     = "recipes"
 	CollectionIngredient = "ingredients"
 )
