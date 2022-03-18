@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import RecipePage from "./RecipePage";
 
 function RecipeList() {
     const [data, setData] = useState<any[]>([]);
@@ -23,8 +25,12 @@ function RecipeList() {
     <div>
         {data ?
             data.map(test => {
+                const recipePage = <RecipePage key={test.id} recipe={test}></RecipePage>
                 return(
-                    <div key={test.id}>{test.title}</div>
+                    <div>
+                        <Link to={`/${test.id}`}>
+                        </Link>
+                    </div>
                 )
             }) : <div>No data yet</div>
         }
