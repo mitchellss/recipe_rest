@@ -55,6 +55,19 @@ func (s *Storage) AddRecipe(recipe adding.Recipe) error {
 		})
 	}
 
+	var materials []Material
+	for i := range recipe.Materials {
+		materials = append(materials, Material{
+			MaterialNumber: recipe.Materials[i].MaterialNumber,
+			IngredientID:   recipe.Materials[i].IngredientID,
+			Unit:           recipe.Materials[i].Unit,
+			Amount:         recipe.Materials[i].Amount,
+			Quality:        recipe.Materials[i].Quality,
+			Note:           recipe.Materials[i].Note,
+			Optional:       recipe.Materials[i].Optional,
+		})
+	}
+
 	recipeId, err := ksuid.NewRandom()
 	if err != nil {
 		return err
@@ -70,6 +83,7 @@ func (s *Storage) AddRecipe(recipe adding.Recipe) error {
 		ServesLow:  recipe.ServesLow,
 		Created:    time.Now(),
 		Steps:      steps,
+		Materials:  materials,
 	}
 
 	if err := s.db.Write(CollectionRecipe, newRecipe.ID, newRecipe); err != nil {
@@ -113,6 +127,20 @@ func (s *Storage) GetAllRecipes() []listing.Recipe {
 		}
 		serviceRecipe.Steps = steps
 
+		var materials []listing.Material
+		for i := range jsonRecipe.Materials {
+			materials = append(materials, listing.Material{
+				MaterialNumber: jsonRecipe.Materials[i].MaterialNumber,
+				IngredientID:   jsonRecipe.Materials[i].IngredientID,
+				Unit:           jsonRecipe.Materials[i].Unit,
+				Amount:         jsonRecipe.Materials[i].Amount,
+				Quality:        jsonRecipe.Materials[i].Quality,
+				Note:           jsonRecipe.Materials[i].Note,
+				Optional:       jsonRecipe.Materials[i].Optional,
+			})
+		}
+		serviceRecipe.Materials = materials
+
 		list = append(list, serviceRecipe)
 	}
 	return list
@@ -146,6 +174,20 @@ func (s *Storage) GetRecipe(id string) (listing.Recipe, error) {
 		})
 	}
 	serviceRecipe.Steps = steps
+
+	var materials []listing.Material
+	for i := range jsonRecipe.Materials {
+		materials = append(materials, listing.Material{
+			MaterialNumber: jsonRecipe.Materials[i].MaterialNumber,
+			IngredientID:   jsonRecipe.Materials[i].IngredientID,
+			Unit:           jsonRecipe.Materials[i].Unit,
+			Amount:         jsonRecipe.Materials[i].Amount,
+			Quality:        jsonRecipe.Materials[i].Quality,
+			Note:           jsonRecipe.Materials[i].Note,
+			Optional:       jsonRecipe.Materials[i].Optional,
+		})
+	}
+	serviceRecipe.Materials = materials
 
 	return serviceRecipe, nil
 }
@@ -186,6 +228,21 @@ func (s *Storage) UpdateRecipe(id string, recipe updating.Recipe) error {
 			})
 		}
 		jsonRecipe.Steps = steps
+	}
+	if recipe.Materials != nil {
+		var materials []Material
+		for i := range recipe.Materials {
+			materials = append(materials, Material{
+				MaterialNumber: recipe.Materials[i].MaterialNumber,
+				IngredientID:   recipe.Materials[i].IngredientID,
+				Unit:           recipe.Materials[i].Unit,
+				Amount:         recipe.Materials[i].Amount,
+				Quality:        recipe.Materials[i].Quality,
+				Note:           recipe.Materials[i].Note,
+				Optional:       recipe.Materials[i].Optional,
+			})
+		}
+		jsonRecipe.Materials = materials
 	}
 
 	if err := s.db.Write(CollectionRecipe, jsonRecipe.ID, jsonRecipe); err != nil {
