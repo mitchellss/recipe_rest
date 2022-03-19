@@ -15,10 +15,12 @@ func Handler(c adding.Service, r listing.Service, u updating.Service, d deleting
 	router := httprouter.New()
 	router.POST("/api/recipe", addRecipe(c))
 	router.POST("/api/ingredient", addIngredient(c))
+	router.POST("/api/unit", addUnit(c))
 	router.GET("/api/recipe", getRecipes(r))
 	router.GET("/api/ingredient", getIngredients(r))
 	router.GET("/api/recipe/:id", getRecipe(r))
 	router.GET("/api/ingredient/:id", getIngredient(r))
+	router.GET("/api/unit", getUnits(r))
 	router.PUT("/api/recipe/:id", updateRecipe(u))
 	router.PUT("/api/ingredient/:id", updateIngredient(u))
 	router.DELETE("/api/recipe/:id", deleteRecipe(d))
@@ -61,6 +63,23 @@ func addIngredient(crudService adding.Service) func(w http.ResponseWriter, r *ht
 	}
 }
 
+func addUnit(crudService adding.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		var newUnit adding.UnitDict
+
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&newUnit)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		crudService.AddUnit(newUnit)
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode("New unit added.")
+	}
+}
+
 func getRecipe(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		recipe, err := crudService.GetRecipe(p.ByName("id"))
@@ -78,6 +97,14 @@ func getRecipes(crudService listing.Service) func(w http.ResponseWriter, r *http
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.Header().Set("Content-Type", "application/json")
 		list := crudService.GetAllRecipes()
+		json.NewEncoder(w).Encode(list)
+	}
+}
+
+func getUnits(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Header().Set("Content-Type", "application/json")
+		list := crudService.GetUnits()
 		json.NewEncoder(w).Encode(list)
 	}
 }

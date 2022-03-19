@@ -19,6 +19,7 @@ const (
 	dir                  = "../../../../data/"
 	CollectionRecipe     = "recipes"
 	CollectionIngredient = "ingredients"
+	CollectionUnits      = "units"
 )
 
 // Storage stores beer data in JSON files
@@ -298,6 +299,32 @@ func (s *Storage) UpdateIngredient(id string, ingredient updating.Ingredient) er
 func (s *Storage) DeleteIngredient(id string) error {
 	if err := s.db.Delete(CollectionIngredient, id); err != nil {
 		return deleting.ErrNotFound
+	}
+	return nil
+}
+
+func (s *Storage) GetUnits() listing.UnitDict {
+	var listingUnitDict listing.UnitDict
+	var jsonUnitDict UnitDict
+	err := s.db.Read(CollectionUnits, "12345", &jsonUnitDict)
+	if err != nil {
+		fmt.Println(err)
+	}
+	listingUnitDict.Dict = jsonUnitDict.Dict
+
+	return listingUnitDict
+}
+
+func (s *Storage) AddUnit(unit string, units_per_cup float64) error {
+	var jsonUnitDict UnitDict
+	jsonUnitDict.Dict = make(map[string]float64)
+	err := s.db.Read(CollectionUnits, "12345", &jsonUnitDict)
+	if err != nil {
+		fmt.Println(err)
+	}
+	jsonUnitDict.Dict[unit] = units_per_cup
+	if err := s.db.Write(CollectionUnits, "12345", jsonUnitDict); err != nil {
+		fmt.Println(err)
 	}
 	return nil
 }

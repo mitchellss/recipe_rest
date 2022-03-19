@@ -10,6 +10,7 @@ type Service interface {
 	GetAllRecipes() []Recipe
 	GetIngredient(id string) (Ingredient, error)
 	GetAllIngredients() []Ingredient
+	GetUnits() UnitDict
 }
 
 type Repository interface {
@@ -17,6 +18,7 @@ type Repository interface {
 	GetAllRecipes() []Recipe
 	GetIngredient(id string) (Ingredient, error)
 	GetAllIngredients() []Ingredient
+	GetUnits() UnitDict
 }
 
 type service struct {
@@ -41,4 +43,8 @@ func (s *service) GetIngredient(id string) (Ingredient, error) {
 
 func (s *service) GetAllIngredients() []Ingredient {
 	return s.r.GetAllIngredients()
+}
+
+func (s *service) GetUnits() UnitDict {
+	return s.r.GetUnits()
 }
