@@ -1,16 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import RecipePage from "./RecipePage";
+import { HOST, PORT } from "./constants";
 
 function RecipeList() {
     const [data, setData] = useState<any[]>([]);
 
     const getAllData = () => {
-        axios.get("http://192.168.1.125:8080/api/recipe")
+        axios.get(`${HOST}:${PORT}/api/recipe`)
             .then(res => {
                 setData(res.data);
-                console.log(res.data)
+                // console.log(res.data)
             })
             .catch((error) => {
                 console.log(error);
@@ -25,10 +25,10 @@ function RecipeList() {
     <div>
         {data ?
             data.map(test => {
-                const recipePage = <RecipePage key={test.id} recipe={test}></RecipePage>
                 return(
-                    <div>
-                        <Link to={`/${test.id}`}>
+                    <div key={test.id}>
+                        <Link to={`/recipe/${test.id}`}>
+                            <div>{test.title}</div>
                         </Link>
                     </div>
                 )
