@@ -22,19 +22,17 @@ function RecipeList() {
     }, []);
 
     return (
-    <div>
-        {data ?
-            data.map(test => {
-                return(
-                    <div key={test.id}>
-                        <Link to={`/recipe/${test.id}`}>
+        <div>
+            {data ?
+                data.map(test => {
+                    return (
+                        <Link key={test.id} to={`/recipe/${test.id}`}>
                             <div>{test.title}</div>
                         </Link>
-                    </div>
-                )
-            }) : <div>No data yet</div>
-        }
-    </div>
+                    )
+                }) : <div>No data yet</div>
+            }
+        </div>
     );
 }
 

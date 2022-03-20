@@ -5,7 +5,38 @@
 .Header {
     color: white;
     font-size: 70px;
-    background-color: rgb(255, 67, 67);
+    background-color: rgb(35, 174, 255);
     min-height: 100px;
     height: 10vw;
+}
+
+.Title {
+    font-size: large;
+}
+
+.RecipeTitle {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.RecipePageBox {
+    background-color: rgb(197, 255, 255);
+    margin: 10px auto;
+}
+
+.IngredientsBox {
+    width: 800px;
+}
+
+.DirectionsBox {
+    width: 1000px;
+}
+
+.RecipePageItem {
+    padding: 10px 10px;
+    text-align: left;
+}
+
+.RecipePageTitle {
+    background-color: rgb(35, 174, 255);
 }

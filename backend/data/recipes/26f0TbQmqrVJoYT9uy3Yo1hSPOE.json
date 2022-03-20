@@ -1,0 +1,85 @@
+{
+	"id": "26f0TbQmqrVJoYT9uy3Yo1hSPOE",
+	"title": "Basic New York-Style Pizza Dough Recipe",
+	"author": "J. Kenji Lopez-Alt",
+	"active_time": 30,
+	"total_time": 1440,
+	"serves_high": 4,
+	"serves_low": 4,
+	"created": "2022-03-20T14:02:21.931329863-04:00",
+	"steps": [
+		{
+			"step_num": 1,
+			"text": "Combine flour, sugar, salt, and yeast in bowl of food processor. Pulse 3 to 4 times until incorporated. Add olive oil and water. Run food processor until mixture forms ball that rides around the bowl above the blade, about 15 seconds. Continue processing 15 seconds longer.",
+			"ingredient_ids": [
+				"26exT8CElkZWeVvQYXIH6bTciGW",
+				"26exhXW80y3OJNlx9OpJBzmwb13",
+				"26exojL7AHOEcQHaxm36Xa1NxsF",
+				"26ey51uVRxY6Z67Ir0IJuuDHVcL",
+				"26eyD7lJqy3R10DEguz4gXg8e63",
+				"26eyIus1NkiZwCfGCrScuCQ2dqh"
+			]
+		},
+		{
+			"step_num": 2,
+			"text": "Transfer dough ball to lightly floured surface and knead once or twice by hand until smooth ball is formed. It should pass the windowpane test. Divide dough into three even parts and place each in a covered quart-sized deli container or in a zipper-lock freezer bag. Place in refrigerator and allow to rise at least 1 day, and up to 5. Remove from refrigerator, shape into balls, and allow to rest at room temperature for at least 2 hours before baking.",
+			"ingredient_ids": null
+		}
+	],
+	"materials": [
+		{
+			"material_num": 1,
+			"ingredient_id": "26exT8CElkZWeVvQYXIH6bTciGW",
+			"unit": "cup",
+			"amount": 5.25,
+			"quality": "",
+			"note": "plus more for dusting",
+			"optional": false
+		},
+		{
+			"material_num": 2,
+			"ingredient_id": "26exhXW80y3OJNlx9OpJBzmwb13",
+			"unit": "tablespoon",
+			"amount": 1.5,
+			"quality": "",
+			"note": "",
+			"optional": false
+		},
+		{
+			"material_num": 3,
+			"ingredient_id": "26exojL7AHOEcQHaxm36Xa1NxsF",
+			"unit": "tablespoon",
+			"amount": 1,
+			"quality": "",
+			"note": "",
+			"optional": false
+		},
+		{
+			"material_num": 4,
+			"ingredient_id": "26ey51uVRxY6Z67Ir0IJuuDHVcL",
+			"unit": "teaspoon",
+			"amount": 2,
+			"quality": "",
+			"note": "such as SAF Instant Yeast",
+			"optional": false
+		},
+		{
+			"material_num": 5,
+			"ingredient_id": "26eyD7lJqy3R10DEguz4gXg8e63",
+			"unit": "tablespoon",
+			"amount": 3,
+			"quality": "",
+			"note": "",
+			"optional": false
+		},
+		{
+			"material_num": 6,
+			"ingredient_id": "26eyIus1NkiZwCfGCrScuCQ2dqh",
+			"unit": "cup",
+			"amount": 1.75,
+			"quality": "lukewarm",
+			"note": "",
+			"optional": false
+		}
+	]
+}

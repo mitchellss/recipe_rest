@@ -8,12 +8,10 @@ import RecipePage from './RecipePage';
 
 function App() {
   return (
-    <div>
       <Routes>
         <Route path="/" element={<RecipeHome/>}/>
         <Route path="/recipe/:recipeId" element={<RecipePage/>}/>
       </Routes>
-    </div>
   );
 }
 

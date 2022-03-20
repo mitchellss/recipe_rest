@@ -96,7 +96,22 @@ func getRecipe(crudService listing.Service) func(w http.ResponseWriter, r *http.
 func getRecipes(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.Header().Set("Content-Type", "application/json")
-		list := crudService.GetAllRecipes()
+		query := r.URL.Query()
+		var list []listing.Recipe
+		val, ok := query["id"]
+		if ok {
+			for _, val := range val {
+				recipe, err := crudService.GetRecipe(val)
+				if err == listing.ErrNotFound {
+					http.Error(w, "The recipe you requested does not exist.", http.StatusNotFound)
+					return
+				}
+				list = append(list, recipe)
+			}
+		} else {
+			list = crudService.GetAllRecipes()
+		}
+
 		json.NewEncoder(w).Encode(list)
 	}
 }
@@ -149,7 +164,21 @@ func deleteRecipe(crudService deleting.Service) func(w http.ResponseWriter, r *h
 func getIngredients(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.Header().Set("Content-Type", "application/json")
-		list := crudService.GetAllIngredients()
+		query := r.URL.Query()
+		var list []listing.Ingredient
+		val, ok := query["id"]
+		if ok {
+			for _, val := range val {
+				ingredient, err := crudService.GetIngredient(val)
+				if err == listing.ErrNotFound {
+					http.Error(w, "The ingredient you requested does not exist.", http.StatusNotFound)
+					return
+				}
+				list = append(list, ingredient)
+			}
+		} else {
+			list = crudService.GetAllIngredients()
+		}
 		json.NewEncoder(w).Encode(list)
 	}
 }
