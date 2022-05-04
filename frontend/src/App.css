@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+a {
+  color: #0066a1;
+  text-decoration: none;
+}
+
 .Header {
   color: white;
   font-size: 70px;
@@ -39,5 +44,26 @@
 
 .RecipePageTitle {
   background-color: #23aeff;
+  font-weight: bold;
+  font-size: large;
+}
+
+.RecipeListing {
+  background-color: #c5ffff;
+  width: 800px;
+  margin: 10px auto;
+  font-size: larger;
+}
+
+.Large {
+  font-size: xx-large;
+}
+
+@media only screen and (hover: none) and (pointer: coarse) {
+  .RecipePageBox {
+    background-color: #c5ffff;
+    margin: 10px auto;
+    width: 100vw;
+  }
 }
 /*# sourceMappingURL=App.css.map */

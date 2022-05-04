@@ -1,6 +1,6 @@
 {
 	"id": "26f0TbQmqrVJoYT9uy3Yo1hSPOE",
-	"title": "Basic New York-Style Pizza Dough Recipe",
+	"title": "Basic New York-Style Pizza Dough",
 	"author": "J. Kenji Lopez-Alt",
 	"active_time": 30,
 	"total_time": 1440,
@@ -40,7 +40,7 @@
 			"material_num": 2,
 			"ingredient_id": "26exhXW80y3OJNlx9OpJBzmwb13",
 			"unit": "tablespoon",
-			"amount": 1.5,
+			"amount": 1.21,
 			"quality": "",
 			"note": "",
 			"optional": false
@@ -49,7 +49,7 @@
 			"material_num": 3,
 			"ingredient_id": "26exojL7AHOEcQHaxm36Xa1NxsF",
 			"unit": "tablespoon",
-			"amount": 1,
+			"amount": 0.625,
 			"quality": "",
 			"note": "",
 			"optional": false
@@ -58,7 +58,7 @@
 			"material_num": 4,
 			"ingredient_id": "26ey51uVRxY6Z67Ir0IJuuDHVcL",
 			"unit": "teaspoon",
-			"amount": 2,
+			"amount": 3.33,
 			"quality": "",
 			"note": "such as SAF Instant Yeast",
 			"optional": false
@@ -67,7 +67,7 @@
 			"material_num": 5,
 			"ingredient_id": "26eyD7lJqy3R10DEguz4gXg8e63",
 			"unit": "tablespoon",
-			"amount": 3,
+			"amount": 2.562,
 			"quality": "",
 			"note": "",
 			"optional": false
@@ -76,7 +76,7 @@
 			"material_num": 6,
 			"ingredient_id": "26eyIus1NkiZwCfGCrScuCQ2dqh",
 			"unit": "cup",
-			"amount": 1.75,
+			"amount": 1.85,
 			"quality": "lukewarm",
 			"note": "",
 			"optional": false

@@ -23,11 +23,12 @@ function RecipeList() {
 
     return (
         <div>
+            <h1 className="Title Large">Recipes:</h1>
             {data ?
                 data.map(test => {
                     return (
                         <Link key={test.id} to={`/recipe/${test.id}`}>
-                            <div>{test.title}</div>
+                            <div className="RecipeListing">{test.title}</div>
                         </Link>
                     )
                 }) : <div>No data yet</div>

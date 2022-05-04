@@ -59,7 +59,12 @@ function RecipePage() {
         .catch((error) => {
             console.log(error);
         });
+    }
 
+    const translateDate = (dateString: string) => {
+        const date = new Date(dateString);
+        // const options = new Intl.DateTimeFormat({ year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString('en-US');
     }
 
     return ( 
@@ -69,57 +74,61 @@ function RecipePage() {
                 <div>
                     <div className="Title RecipeTitle">{recipeData.title}</div>
                     <div className="Title RecipeAuthor">{recipeData.author}</div>
-                    <div className="Title RecipeCreated">{recipeData.created}</div>
+                    <div className="Title RecipeCreated">{translateDate(recipeData.created)}</div>
                     <br />
                     <div className="RecipePageBox IngredientsBox">
                         <div className="RecipePageTitle IngredientsTitle">Ingredients</div>
-                        {recipeData.materials.map(mat => {
-                            // console.log(mat);
-                            
-                            var mass = -1;
+                        <ul>
+                            {recipeData.materials.map(mat => {
+                                // console.log(mat);
+                                
+                                var mass = -1;
 
-                            // ingredientData ? console.log("test123") : {}
-                            if (ingredientData) {
-                                const a = ingredientData.find(x => x.id == mat.ingredient_id)
-                                if (a) {
-                                    mat.name = a.name;
-                                    mat.unit2 = a.unit;
-                                    mat.unit2_mass_in_grams = a.mass_in_grams;
-                                    mat.substitutes = a.substitutes;
-                                }
-                                if (unitData) {
-                                    const upc1 = unitData.get(mat.unit)
-                                    const upc2 = unitData.get(mat.unit2)
-                                    if (upc1 && upc2) {
-                                        mass = mat.unit2_mass_in_grams * upc2 * mat.amount / upc1
+                                // ingredientData ? console.log("test123") : {}
+                                if (ingredientData) {
+                                    const a = ingredientData.find(x => x.id == mat.ingredient_id)
+                                    if (a) {
+                                        mat.name = a.name;
+                                        mat.unit2 = a.unit;
+                                        mat.unit2_mass_in_grams = a.mass_in_grams;
+                                        mat.substitutes = a.substitutes;
+                                    }
+                                    if (unitData) {
+                                        const upc1 = unitData.get(mat.unit)
+                                        const upc2 = unitData.get(mat.unit2)
+                                        if (upc1 && upc2) {
+                                            mass = +((mat.unit2_mass_in_grams * upc2 * mat.amount / upc1).toFixed(1))
+                                        }
                                     }
                                 }
-                            }
 
-                            // const mass = mat.unit2_mass_in_grams * 
+                                // const mass = mat.unit2_mass_in_grams * 
 
-                            const quality = (mat.quality == "") ? "" : `, ${mat.quality}`;
-                            const note = (mat.note == "") ? "" : `; ${mat.note}`;
-                            if (mass > 0) {
-                                return(
-                                    <div key={mat.ingredient_id} className="RecipePageItem IngredientItem">{mat.amount} {mat.unit} {mat.name}{quality}{note} ({mass}g)</div>
-                                )
-                            } else {
-                                return(
-                                    <div key={mat.ingredient_id} className="RecipePageItem IngredientItem">{mat.amount} {mat.unit} {mat.name} ( - g)</div>
-                                )
-                            }
-                        })}    
+                                const quality = (mat.quality == "") ? "" : `, ${mat.quality}`;
+                                const note = (mat.note == "") ? "" : `; ${mat.note}`;
+                                if (mass > 0) {
+                                    return(
+                                        <li key={mat.ingredient_id} className="RecipePageItem IngredientItem">{mat.amount} {mat.unit} {mat.name}{quality}{note} ({mass}g)</li>
+                                    )
+                                } else {
+                                    return(
+                                        <li key={mat.ingredient_id} className="RecipePageItem IngredientItem">{mat.amount} {mat.unit} {mat.name} ( - g)</li>
+                                    )
+                                }
+                            })}    
+                        </ul>
                     </div>
                     <br />
                     <div className="RecipePageBox DirectionsBox">
-                        <div className="RecipePageTitle DirectionsTitle">Directions</div>            
-                        {recipeData.steps.map(step => {
-                            // console.log(step);
-                            return(
-                                <div key={step.step_num} className="RecipePageItem DirectionsItem">{step.step_num}. {step.text}</div>
-                            )
-                        })}
+                        <div className="RecipePageTitle DirectionsTitle">Directions</div>
+                        <ol>
+                            {recipeData.steps.map(step => {
+                                // console.log(step);
+                                return(
+                                    <li key={step.step_num} className="RecipePageItem DirectionsItem">{step.text}</li>
+                                )
+                            })}
+                        </ol>         
                     </div>
                 </div> 
             : <div>Loading...</div>
