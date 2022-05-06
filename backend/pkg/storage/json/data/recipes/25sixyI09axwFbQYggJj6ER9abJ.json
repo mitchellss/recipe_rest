@@ -1,0 +1,28 @@
+{
+	"id": "25sixyI09axwFbQYggJj6ER9abJ",
+	"title": "Black Bean Burgers",
+	"author": "J Kenji Lopez Alt",
+	"active_time": 90,
+	"total_time": 180,
+	"serves_high": 6,
+	"serves_low": 4,
+	"created": "2022-03-03T15:47:24.310843046Z",
+	"steps": [
+		{
+			"step_num": 1,
+			"text": "give up",
+			"ingredient_ids": [
+				"12345",
+				"67890"
+			]
+		},
+		{
+			"step_num": 2,
+			"text": "you win",
+			"ingredient_ids": [
+				"12345",
+				"67890"
+			]
+		}
+	]
+}

@@ -1,0 +1,134 @@
+* {
+  text-align: center;
+}
+
+a {
+  color: #0066a1;
+  text-decoration: none;
+}
+
+.Header {
+  color: white;
+  font-size: 70px;
+  background-color: #23aeff;
+  min-height: 100px;
+  height: 10vw;
+}
+
+.Title {
+  font-size: large;
+}
+
+.RecipeTitle {
+  font-size: larger;
+  font-weight: bold;
+}
+
+.RecipePageBox {
+  background-color: #c5ffff;
+  margin: 10px auto;
+}
+
+.IngredientsBox {
+  width: 800px;
+}
+
+.DirectionsBox {
+  width: 1000px;
+}
+
+.RecipePageItem {
+  padding: 10px 10px;
+  text-align: left;
+}
+
+.RecipePageTitle {
+  background-color: #23aeff;
+  font-weight: bold;
+  font-size: large;
+}
+
+.RecipeListing {
+  background-color: #c5ffff;
+  width: 800px;
+  margin: 10px auto;
+  font-size: larger;
+}
+
+.Large {
+  font-size: xx-large;
+}
+
+.InputLine {
+  display: flex;
+  justify-content: space-between;
+  width: 600px;
+  margin: 10px auto;
+  padding: 5px;
+  background-color: #c5ffff;
+}
+
+.InputLineStep {
+  display: flex;
+  width: 600px;
+}
+
+.InputLineIngredient {
+  margin: 0px auto;
+}
+
+.InputContent {
+  position: relative;
+}
+
+.NoULStyle {
+  list-style-type: none;
+  padding: 0px;
+}
+
+.IngredientBlock {
+  margin: 10px 0px;
+}
+
+.DeleteButton {
+  background-color: #ff9898;
+  color: inherit;
+	border: none;
+	padding: 3px;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+ol {
+  list-style: none;
+  counter-reset: counterName;
+}
+
+li {
+ position: relative;
+ counter-increment: counterName;
+}
+
+li:before {
+  content: counter(counterName) ".";
+  position: absolute;
+  left:-17px;
+  top: 5px;
+}
+
+.FixedWidthOL {
+  margin: 0px auto;
+  width: 600px;
+  padding: 0px;
+}
+
+
+@media only screen and (hover: none) and (pointer: coarse) {
+  .RecipePageBox {
+    background-color: #c5ffff;
+    margin: 10px auto;
+    width: 100vw;
+  }
+}
+/*# sourceMappingURL=App.css.map */
