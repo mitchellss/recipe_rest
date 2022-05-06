@@ -33,6 +33,9 @@ function RecipeList() {
                     )
                 }) : <div>No data yet</div>
             }
+            <Link to={"/recipe/add"}>
+                <div className="RecipeListing">Add New Recipe</div>
+            </Link>
         </div>
     );
 }
