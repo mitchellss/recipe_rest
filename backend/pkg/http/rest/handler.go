@@ -30,6 +30,8 @@ func Handler(c adding.Service, r listing.Service, u updating.Service, d deleting
 
 func addRecipe(crudService adding.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var newRecipe adding.Recipe
 
 		decoder := json.NewDecoder(r.Body)
@@ -47,6 +49,8 @@ func addRecipe(crudService adding.Service) func(w http.ResponseWriter, r *http.R
 
 func addIngredient(crudService adding.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var newIngredient adding.Ingredient
 
 		decoder := json.NewDecoder(r.Body)
@@ -65,6 +69,8 @@ func addIngredient(crudService adding.Service) func(w http.ResponseWriter, r *ht
 
 func addUnit(crudService adding.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var newUnit adding.UnitDict
 
 		decoder := json.NewDecoder(r.Body)
@@ -82,6 +88,8 @@ func addUnit(crudService adding.Service) func(w http.ResponseWriter, r *http.Req
 
 func getRecipe(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		recipe, err := crudService.GetRecipe(p.ByName("id"))
 		if err == listing.ErrNotFound {
 			http.Error(w, "The recipe you requested does not exist.", http.StatusNotFound)
@@ -96,6 +104,8 @@ func getRecipe(crudService listing.Service) func(w http.ResponseWriter, r *http.
 func getRecipes(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		query := r.URL.Query()
 		var list []listing.Recipe
 		val, ok := query["id"]
@@ -118,6 +128,8 @@ func getRecipes(crudService listing.Service) func(w http.ResponseWriter, r *http
 
 func getUnits(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Content-Type", "application/json")
 		list := crudService.GetUnits()
 		json.NewEncoder(w).Encode(list)
@@ -126,6 +138,9 @@ func getUnits(crudService listing.Service) func(w http.ResponseWriter, r *http.R
 
 func updateRecipe(crudService updating.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 		var newRecipe updating.Recipe
 
 		decoder := json.NewDecoder(r.Body)
@@ -149,6 +164,9 @@ func updateRecipe(crudService updating.Service) func(w http.ResponseWriter, r *h
 
 func deleteRecipe(crudService deleting.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 		err := crudService.DeleteRecipe(p.ByName("id"))
 		if err == deleting.ErrNotFound {
 			http.Error(w, "The recipe you requested does not exist.", http.StatusNotFound)
@@ -163,6 +181,8 @@ func deleteRecipe(crudService deleting.Service) func(w http.ResponseWriter, r *h
 
 func getIngredients(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Content-Type", "application/json")
 		query := r.URL.Query()
 		var list []listing.Ingredient
@@ -185,6 +205,8 @@ func getIngredients(crudService listing.Service) func(w http.ResponseWriter, r *
 
 func getIngredient(crudService listing.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		ingredient, err := crudService.GetIngredient(p.ByName("id"))
 		if err == listing.ErrNotFound {
 			http.Error(w, "The ingredient you requested does not exist.", http.StatusNotFound)
@@ -198,6 +220,8 @@ func getIngredient(crudService listing.Service) func(w http.ResponseWriter, r *h
 
 func updateIngredient(crudService updating.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var newIngredient updating.Ingredient
 
 		decoder := json.NewDecoder(r.Body)
@@ -221,6 +245,8 @@ func updateIngredient(crudService updating.Service) func(w http.ResponseWriter, 
 
 func deleteIngredient(crudService deleting.Service) func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		err := crudService.DeleteIngredient(p.ByName("id"))
 		if err == deleting.ErrNotFound {
 			http.Error(w, "The ingredient you requested does not exist.", http.StatusNotFound)
