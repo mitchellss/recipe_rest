@@ -42,6 +42,10 @@ a {
   text-align: left;
 }
 
+.DirectionsItem::before {
+  top: 10px;
+}
+
 .RecipePageTitle {
   background-color: #23aeff;
   font-weight: bold;
@@ -60,8 +64,12 @@ a {
 }
 
 .InputLine {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   width: 600px;
   margin: 10px auto;
   padding: 5px;
@@ -69,6 +77,8 @@ a {
 }
 
 .InputLineStep {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   width: 600px;
 }
@@ -93,11 +103,11 @@ a {
 .DeleteButton {
   background-color: #ff9898;
   color: inherit;
-	border: none;
-	padding: 3px;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+  border: none;
+  padding: 3px;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
 ol {
@@ -106,14 +116,14 @@ ol {
 }
 
 li {
- position: relative;
- counter-increment: counterName;
+  position: relative;
+  counter-increment: counterName;
 }
 
-li:before {
+ol li:before {
   content: counter(counterName) ".";
   position: absolute;
-  left:-17px;
+  left: -17px;
   top: 5px;
 }
 
@@ -123,6 +133,10 @@ li:before {
   padding: 0px;
 }
 
+.SubmitRecipeButton {
+  width: 100px;
+  margin: 30px;
+}
 
 @media only screen and (hover: none) and (pointer: coarse) {
   .RecipePageBox {

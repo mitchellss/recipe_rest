@@ -1,5 +1,7 @@
-import { FunctionComponent, useState } from "react";
+import axios from "axios";
+import React, { FunctionComponent, useState } from "react";
 import * as uuid from "uuid";
+import { HOST, PORT } from "./constants";
 
 interface RecipeStep {
     stepId: string
@@ -55,11 +57,11 @@ const AddRecipePage: FunctionComponent<AddRecipePageProps> = () => {
                 recipeSteps.push(
                     <li key={`step_${item.stepId}`} className="InputLine">
                         <div>
-                            <label htmlFor={`step_${item.stepId}`}>Step Text:</label>
+                            <label htmlFor={`step_text_${item.stepId}`}>Step Text:</label>
                         </div>
                         <div>
-                            <input type="text" name={`step_${item.stepId}`} />
-                            <input type="button" value="delete" onClick={() => clickDeleteStep(item.stepId)} />
+                            <input type="text" name={`step_text_${item.stepId}`} />
+                            <input type="button" value="Delete" className="DeleteButton" onClick={() => clickDeleteStep(item.stepId)} />
                         </div>
                     </li>
                 )
@@ -76,23 +78,23 @@ const AddRecipePage: FunctionComponent<AddRecipePageProps> = () => {
                     <li key={`${item.ingredientId}`} className="IngredientBlock">
                         <div className="InputLine InputLineIngredient">
                             <label>Ingredient:</label>
-                            <input type="text" id="fname" name="fname" />
+                            <input type="text" name={`ingredient_name_${item.ingredientId}`} />
                             <label>Amount:</label>
-                            <input type="number" step="0.125" id="fname" name="fname" />
-                            <select name="unit_dropdown" id="1">
+                            <input type="number" step="0.125" name={`ingredient_amount_${item.ingredientId}`} />
+                            <select name={`ingredient_unit_${item.ingredientId}`} id="1">
                                 <option value="cup">Cup(s)</option>
-                                <option value="tbsp">Tablespoon(s)</option>
-                                <option value="tsp">Teaspoon(s)</option>
+                                <option value="tablespoon">Tablespoon(s)</option>
+                                <option value="teaspoon">Teaspoon(s)</option>
                             </select>
                         </div>
                         <div className="InputLine InputLineIngredient">
                             <label>Adjectives (i.e. sliced, diced, packed, sifted):</label>
-                            <input type="text" id="fname" name="fname" />
+                            <input type="text" name={`ingredient_adj_${item.ingredientId}`} />
                         </div>
                         <div className="InputLine InputLineIngredient">
                             <label>Additional Notes:</label>
-                            <input type="text" id="fname" name="fname" />
-                            <input type="button" id="fname" name="fname" value="Delete" className="DeleteButton" onClick={() => { clickDeleteIngredient(item.ingredientId) }} />
+                            <input type="text" name={`ingredient_note_${item.ingredientId}`} />
+                            <input type="button" value="Delete" className="DeleteButton" onClick={() => { clickDeleteIngredient(item.ingredientId) }} />
                         </div>
                     </li>
                 )
@@ -101,8 +103,57 @@ const AddRecipePage: FunctionComponent<AddRecipePageProps> = () => {
         return recipeIngredients;
     }
 
+    const submitRecipe = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+
+        var addRecipeSteps: object[] = [];
+        steps?.map((item, index) => {
+            const step_text = (event.currentTarget.elements.namedItem(`step_text_${item.stepId}`) as HTMLInputElement).value
+            addRecipeSteps.push({
+                "step_num": index + 1,
+                "text" : step_text,
+            })
+        });
+
+        var addRecipeIngredients: object[] = [];
+        ingredients?.map((item, index) => {
+            const ingredient_id = "test123";
+            const ingredient_amount = (event.currentTarget.elements.namedItem(`ingredient_amount_${item.ingredientId}`) as HTMLInputElement).value
+            const ingredient_unit = (event.currentTarget.elements.namedItem(`ingredient_unit_${item.ingredientId}`) as HTMLInputElement).value
+            const ingredient_adj = (event.currentTarget.elements.namedItem(`ingredient_adj_${item.ingredientId}`) as HTMLInputElement).value
+            const ingredient_note = (event.currentTarget.elements.namedItem(`ingredient_note_${item.ingredientId}`) as HTMLInputElement).value
+            addRecipeIngredients.push({
+                "material_num": index + 1,
+                "ingredient_id": ingredient_id,
+                "unit": ingredient_unit,
+                "amount": +ingredient_amount,
+                "quality": ingredient_adj,
+                "note": ingredient_note
+            })
+        });
+
+        const data = {
+            "title": event.currentTarget.recipe_name.value,
+            "author" : event.currentTarget.recipe_author.value,
+            "active_time" : +event.currentTarget.active_time.value,
+            "total_time" : +event.currentTarget.total_time.value,
+            "serves_high" : +event.currentTarget.serves_low.value,
+            "serves_low" : +event.currentTarget.serves_high.value,
+            "steps" : addRecipeSteps,
+            "materials" : addRecipeIngredients
+        }
+
+        axios.post(`${HOST}:${PORT}/api/recipe/`, data).then((res) => {
+            console.log(res)
+        })
+    }
+
+    const cancelSubmitRecipe = (): void => {
+
+    }
+
     return (
-        <form>
+        <form onSubmit={submitRecipe}>
             <h1>Add a Recipe:</h1>
             <div className="InputLine">
                 <label htmlFor="recipe_name" className="InputLabel">Recipe Title:</label>
@@ -135,7 +186,7 @@ const AddRecipePage: FunctionComponent<AddRecipePageProps> = () => {
             <div className="InputLine">
                 <label htmlFor="serves_low">Serves (# of People):</label>
                 <div className="InputContent">
-                    <input type="number" id="fname" name="serves_low" step="1" pattern="\d+" />
+                    <input type="number" name="serves_low" step="1" pattern="\d+" />
                     <label htmlFor="serves_high">to</label>
                     <input type="number" id="serves_high" name="serves_high" step="1" pattern="\d+" />
                 </div>
@@ -156,6 +207,10 @@ const AddRecipePage: FunctionComponent<AddRecipePageProps> = () => {
                 }
             </ol>
             <input type="button" value="Add Recipe Step" onClick={clickAddStep} />
+                <div>
+                <input type="submit" value="Add Recipe" className="SubmitRecipeButton"/>
+                <input type="button" value="Cancel" className="SubmitRecipeButton" onClick={cancelSubmitRecipe}/>
+                </div>
         </form>
     );
 }
